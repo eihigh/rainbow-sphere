@@ -15,6 +15,15 @@ import (
 
 func (s *Stage) DrawObjects(t T) {
 	{
+		// area
+		i := s.areaImage
+		op := &ebiten.DrawImageOptions{}
+		op.ColorM.Scale(1, 1, 1, 0.4)
+		op.GeoM.Translate(s.area.Min.X, s.area.Min.Y)
+		asset.Screen.DrawImage(i, op)
+	}
+
+	{
 		// sphere
 		for _, sp := range s.spheres {
 			i := asset.SphereImages[sp.index]
@@ -30,9 +39,9 @@ func (s *Stage) DrawObjects(t T) {
 				s.tick.SubTick(sp.start).Span(0, 24, func(t T) {
 					t.Repeat(0, 6, func(n int, t T) {
 						t.Span(0, 3, func(T) {
-							op.ColorM.Scale(1, 1, 1, 0.2)
+							op.ColorM.Scale(1, 1, 1, 0.6)
 						}).Span(0, 3, func(T) {
-							op.ColorM.Scale(1, 1, 1, 0.7)
+							op.ColorM.Scale(1, 1, 1, 0.9)
 						})
 					})
 				})
@@ -91,6 +100,17 @@ func (s *Stage) DrawObjects(t T) {
 
 		switch s.player.mode {
 		case "":
+			// 開幕無敵
+			s.tick.SubTick(s.player.start).Span(1, startInvincibleTick, func(t T) {
+				t.Repeat(0, 8, func(n int, t T) {
+					t.Span(0, 4, func(T) {
+						op.ColorM.Scale(1, 1, 1, 0.2)
+					}).Span(0, 4, func(T) {
+						op.ColorM.Scale(1, 1, 1, 0.7)
+					})
+				})
+			})
+
 		case "damage":
 			// ダメージを受けてから点滅する
 			s.tick.SubTick(s.player.start).Span(0, 24, func(t T) {

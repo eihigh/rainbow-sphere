@@ -101,7 +101,7 @@ func newStageModel(id int) *model.Stage {
 		// 一定ステージクリア後
 		// endlessConfigからランダムに選択
 		// HPはステージごとに1減る
-		hp := 5 - (id-len(configs))/4
+		hp := 4 - (id-len(configs))/4
 		if hp <= 0 {
 			hp = 1
 		}

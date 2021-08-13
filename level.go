@@ -33,7 +33,7 @@ var (
 			SphereHP: 50,
 			MinSpeed: 5,
 			AmpSpeed: 2,
-			MinScale: 3.5,
+			MinScale: 2.5,
 			AmpScale: 0,
 		},
 		{ // stage 5
@@ -42,7 +42,7 @@ var (
 			MinSpeed: 3,
 			AmpSpeed: 8,
 			MinScale: 1,
-			AmpScale: 2.5,
+			AmpScale: 1.5,
 		},
 		// { // stage 6
 		// 	HP:       5,
@@ -56,7 +56,7 @@ var (
 			HP:       5,
 			SphereHP: 25,
 			MinSpeed: 5,
-			AmpSpeed: 10,
+			AmpSpeed: 9,
 			MinScale: 1,
 			AmpScale: 0,
 		},
@@ -68,7 +68,7 @@ var (
 			SphereHP: 50,
 			MinSpeed: 6,
 			AmpSpeed: 5,
-			MinScale: 3.8,
+			MinScale: 2.5,
 			AmpScale: 0,
 		},
 		{ // stage 5
@@ -76,13 +76,13 @@ var (
 			MinSpeed: 7,
 			AmpSpeed: 8,
 			MinScale: 1,
-			AmpScale: 2.5,
+			AmpScale: 1.5,
 		},
 		{ // stage 6
 			SphereHP: 50,
 			MinSpeed: 9,
 			AmpSpeed: 3,
-			MinScale: 3,
+			MinScale: 1.5,
 			AmpScale: 1,
 		},
 		{ // stage 7

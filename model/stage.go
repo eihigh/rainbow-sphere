@@ -10,6 +10,7 @@ import (
 	"github.com/eihigh/rainbow-sphere/util"
 	"github.com/eihigh/zu/geom"
 	"github.com/eihigh/zu/tick"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 const (
@@ -17,21 +18,24 @@ const (
 	shootRadius  = 8
 	playerRadius = 16
 
-	playerSpeed    = 5
-	shootSpeed     = 7
-	coolTime       = 4
-	invincibleTick = 36
-	tau            = math.Pi * 2
+	playerSpeed         = 5
+	shootSpeed          = 7
+	coolTime            = 4
+	invincibleTick      = 36
+	startInvincibleTick = 90
+	tau                 = math.Pi * 2
 )
 
 type T = tick.Tick
 
 type Stage struct {
-	tick    T
-	bounds  geom.Rectangle
-	player  *player
-	spheres []*sphere
-	shoots  []*shoot
+	tick      T
+	bounds    geom.Rectangle
+	area      geom.Rectangle
+	areaImage *ebiten.Image
+	player    *player
+	spheres   []*sphere
+	shoots    []*shoot
 }
 
 type Config struct {
@@ -80,12 +84,16 @@ func NewStage(c *Config) *Stage {
 	// がんばる
 	s := &Stage{
 		bounds: geom.Rect(0, 0, asset.VW, asset.VH),
+		area:   geom.Rect(200, 100, 600, 500),
 		player: &player{
 			pos: geom.Pt(util.Col(6), util.Row(6)),
 			// pos: geom.Point{},
 			hp: c.HP,
 		},
 	}
+
+	s.areaImage = ebiten.NewImage(int(s.area.Dx()), int(s.area.Dy()))
+	s.areaImage.Fill(asset.RainbowColors[6])
 
 	// 陰陽玉７個生成
 	for i := 0; i < 7; i++ {
@@ -150,17 +158,17 @@ func (s *Stage) UpdateMain(i *Input) string {
 	if i.Down {
 		s.player.pos.Y += playerSpeed
 	}
-	if s.player.pos.X < s.bounds.Min.X {
-		s.player.pos.X = s.bounds.Min.X
+	if s.player.pos.X < s.area.Min.X {
+		s.player.pos.X = s.area.Min.X
 	}
-	if s.player.pos.Y < s.bounds.Min.Y {
-		s.player.pos.Y = s.bounds.Min.Y
+	if s.player.pos.Y < s.area.Min.Y {
+		s.player.pos.Y = s.area.Min.Y
 	}
-	if s.bounds.Max.X < s.player.pos.X {
-		s.player.pos.X = s.bounds.Max.X
+	if s.area.Max.X < s.player.pos.X {
+		s.player.pos.X = s.area.Max.X
 	}
-	if s.bounds.Max.Y < s.player.pos.Y {
-		s.player.pos.Y = s.bounds.Max.Y
+	if s.area.Max.Y < s.player.pos.Y {
+		s.player.pos.Y = s.area.Max.Y
 	}
 
 	// 陰陽玉Update
@@ -281,6 +289,10 @@ func (p *player) hittable(t T) bool {
 	}
 	if p.mode == "damage" && t.SubTick(p.start).Elapsed() < invincibleTick {
 		// ダメージ受けてから無敵時間以内は当たり判定消失
+		return false
+	}
+	if p.mode == "" && t.SubTick(p.start).Elapsed() < startInvincibleTick {
+		// 開幕無敵
 		return false
 	}
 	return true

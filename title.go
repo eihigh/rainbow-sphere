@@ -11,7 +11,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-var howToPlay = `操作説明
+var howToPlay = `【操作説明】
+結界内から暴走陰陽玉を破壊せよ！
+※ライフはステージクリアでリセットされますが、
+初期ライフはステージが進むごとにどんどん減ります
+
 Pause: Space
 Move: WASD or ↑←↓→
 Aim: Mouse Cursor
@@ -78,6 +82,6 @@ func (tt *title) draw() {
 	case "howToPlay":
 		msg := howToPlay
 		x, y := util.Col(6), util.Row(6)
-		util.DrawTextCenter(asset.Screen, msg, 36, x, y, color.White)
+		util.DrawTextCenter(asset.Screen, msg, 24, x, y, color.White)
 	}
 }
