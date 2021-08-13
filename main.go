@@ -82,7 +82,7 @@ func main() {
 		panic(err)
 	}
 	ebiten.SetWindowSize(asset.VW, asset.VH)
-	ebiten.SetWindowTitle("Raindow Impact")
+	ebiten.SetWindowTitle("Rainbow Impact")
 	app, err := newApp()
 	if err != nil {
 		panic(err)
