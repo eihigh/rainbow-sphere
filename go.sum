@@ -1,6 +1,10 @@
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/ebiten/emoji v0.0.0-20210512170544-749d4b33f5fb h1:Mgk2Okda/DynzdIpbxXVwO9zCLSRz0Yepg7owt/XmTg=
 github.com/ebiten/emoji v0.0.0-20210512170544-749d4b33f5fb/go.mod h1:fiaMKOzMv6sWHFsxS9QM+6I7STzAFOnOXV/hGs2GVmU=
+github.com/eihigh/zu v0.0.0-20210809215310-ebf62e6510b2 h1:92b92qGHpGwy/4LwCQPWxGWwLsfz6olKzFLLjKPwTyY=
+github.com/eihigh/zu v0.0.0-20210809215310-ebf62e6510b2/go.mod h1:0L22RM3Mu8B2FRp5R9HKciJlsCfqfqMGN/S12Mg7giY=
+github.com/eihigh/zu v0.0.0-20210813044404-6c28a738ce0d h1:L/AiNgQRRvM95okNAsILafDrd7IR+6hnrjHec+ySuCQ=
+github.com/eihigh/zu v0.0.0-20210813044404-6c28a738ce0d/go.mod h1:0L22RM3Mu8B2FRp5R9HKciJlsCfqfqMGN/S12Mg7giY=
 github.com/fogleman/ease v0.0.0-20170301025033-8da417bf1776 h1:VRIbnDWRmAh5yBdz+J6yFMF5vso1It6vn+WmM/5l7MA=
 github.com/fogleman/ease v0.0.0-20170301025033-8da417bf1776/go.mod h1:9wvnDu3YOfxzWM9Cst40msBF1C2UdQgDv962oTxSuMs=
 github.com/fogleman/gg v1.3.0 h1:/7zJX8F6AaYQc57WQCyN9cAIz+4bCJGO9B+dyW29am8=
@@ -17,6 +21,8 @@ github.com/hajimehoshi/bitmapfont/v2 v2.1.3/go.mod h1:2BnYrkTQGThpr/CY6LorYtt/zE
 github.com/hajimehoshi/ebiten/v2 v2.1.0/go.mod h1:mpAvpmTRbMdhQDZplZ4rfEogRhdsfAGTC0zLhxawKHY=
 github.com/hajimehoshi/ebiten/v2 v2.2.0-alpha.11.0.20210808084548-4482301882cb h1:SD8RxYIsaqMbWZHIlwnSCYC4NKd2/fwxY9UHElJm8DU=
 github.com/hajimehoshi/ebiten/v2 v2.2.0-alpha.11.0.20210808084548-4482301882cb/go.mod h1:2jj60Rz9WF8YOAJrh9355q9d0yoa9VKqhGxo112+rSU=
+github.com/hajimehoshi/ebiten/v2 v2.2.0-alpha.11.0.20210812183551-797f42b839cd h1:Ef1YJ/gjDQp5hMmcX+MDtK+m9R/RhjJ45sBHjeE6UfI=
+github.com/hajimehoshi/ebiten/v2 v2.2.0-alpha.11.0.20210812183551-797f42b839cd/go.mod h1:2jj60Rz9WF8YOAJrh9355q9d0yoa9VKqhGxo112+rSU=
 github.com/hajimehoshi/file2byteslice v0.0.0-20200812174855-0e5e8a80490e/go.mod h1:CqqAHp7Dk/AqQiwuhV1yT2334qbA/tFWQW0MD2dGqUE=
 github.com/hajimehoshi/go-mp3 v0.3.2/go.mod h1:qMJj/CSDxx6CGHiZeCgbiq2DSUkbK0UbtXShQcnfyMM=
 github.com/hajimehoshi/oto v0.6.1/go.mod h1:0QXGEkbuJRohbJaxr7ZQSxnju7hEhseiPx2hrh6raOI=
