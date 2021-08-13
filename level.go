@@ -56,7 +56,7 @@ var (
 			HP:       5,
 			SphereHP: 25,
 			MinSpeed: 5,
-			AmpSpeed: 9,
+			AmpSpeed: 6,
 			MinScale: 1,
 			AmpScale: 0,
 		},
@@ -66,21 +66,21 @@ var (
 	endlessConfigs = []*model.Config{
 		{ // stage 4
 			SphereHP: 50,
-			MinSpeed: 6,
+			MinSpeed: 5,
 			AmpSpeed: 5,
 			MinScale: 2.5,
 			AmpScale: 0,
 		},
 		{ // stage 5
 			SphereHP: 35,
-			MinSpeed: 7,
-			AmpSpeed: 8,
+			MinSpeed: 6,
+			AmpSpeed: 4,
 			MinScale: 1,
 			AmpScale: 1.5,
 		},
 		{ // stage 6
 			SphereHP: 50,
-			MinSpeed: 9,
+			MinSpeed: 7,
 			AmpSpeed: 3,
 			MinScale: 1.5,
 			AmpScale: 1,
@@ -88,7 +88,7 @@ var (
 		{ // stage 7
 			SphereHP: 25,
 			MinSpeed: 5,
-			AmpSpeed: 11,
+			AmpSpeed: 6,
 			MinScale: 1,
 			AmpScale: 0,
 		},
