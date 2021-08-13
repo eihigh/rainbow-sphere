@@ -9,7 +9,7 @@
 </head>
 
 <body style="background-color: white;">
-	<script src="wasm_exec.js"></script>
+	<script src="/rainbow-sphere/wasm_exec.js"></script>
 	<script>
 		// Polyfill
 		if (!WebAssembly.instantiateStreaming) {
@@ -20,7 +20,7 @@
 		}
 
 		const go = new Go();
-		WebAssembly.instantiateStreaming(fetch("game.wasm"), go.importObject).then(result => {
+		WebAssembly.instantiateStreaming(fetch("/rainbow-sphere/game.wasm"), go.importObject).then(result => {
 			go.run(result.instance);
 		});
 	</script>
