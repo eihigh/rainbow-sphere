@@ -92,7 +92,7 @@ func NewStage(c *Config) *Stage {
 
 		// 位置
 		pos := geom.Pt(util.Col(6), util.Row(6))
-		r := util.Col(5)
+		r := util.Row(5)
 		t := tau / 7 * float64(i)
 
 		// 拡大率
@@ -189,7 +189,7 @@ func (s *Stage) UpdateMain(i *Input) string {
 		if shoot.garbage() {
 			continue
 		}
-		b := geom.Rect(s.bounds.Min.X-50, s.bounds.Min.Y-50, s.bounds.Max.Y+50, s.bounds.Max.Y+50)
+		b := geom.Rect(s.bounds.Min.X-50, s.bounds.Min.Y-50, s.bounds.Max.X+50, s.bounds.Max.Y+50)
 		if !shoot.pos.In(b) {
 			continue
 		}

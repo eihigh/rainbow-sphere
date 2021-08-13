@@ -19,7 +19,7 @@ import (
 var FS embed.FS
 
 const (
-	VW, VH = 600, 800 // なんか変だけどここでグローバル参照可能にしてしまう
+	VW, VH = 800, 600 // なんか変だけどここでグローバル参照可能にしてしまう
 )
 
 var (
@@ -52,7 +52,8 @@ func Load() error {
 	var err error
 	PlayerImage, err = newImage("image/[dot]touhou_gamejam_dot_pack_2021/Split/Chara_123.png")
 	if err != nil {
-		return err
+		PlayerImage = ebiten.NewImage(48, 48)
+		PlayerImage.Fill(color.White)
 	}
 
 	HeartImage = emoji.Image("❤")
