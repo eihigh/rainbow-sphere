@@ -299,7 +299,7 @@ func (p *player) hittable(t T) bool {
 }
 
 func (p *player) hit(t T) {
-	p.hp--
+	// p.hp--
 	p.start = t.Elapsed()
 	if p.hp <= 0 {
 		p.mode = "dead"
@@ -318,7 +318,7 @@ func (s *sphere) hittable() bool {
 }
 
 func (s *sphere) hit(t T) {
-	s.hp--
+	// s.hp--
 	s.start = t.Elapsed()
 	if s.hp <= 0 {
 		s.mode = "break"
