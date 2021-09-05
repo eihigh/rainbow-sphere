@@ -8,6 +8,7 @@ import (
 	"math"
 
 	"github.com/ebiten/emoji"
+	"github.com/eihigh/zu/colorf"
 	"github.com/fogleman/gg"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
@@ -100,9 +101,7 @@ func newImage(name string) (*ebiten.Image, error) {
 }
 
 func newSphereImage(clr color.RGBA) *ebiten.Image {
-	r := float64(clr.R) / 0xff
-	g := float64(clr.G) / 0xff
-	b := float64(clr.B) / 0xff
+	r, g, b, _ := colorf.RGBAf(clr)
 
 	dc := gg.NewContext(128, 128)
 	// 陽（半円）
@@ -136,12 +135,8 @@ func newSphereImage(clr color.RGBA) *ebiten.Image {
 }
 
 func newDiamondImage(fillClr, strokeClr color.RGBA) *ebiten.Image {
-	fr := float64(fillClr.R) / 0xff
-	fg := float64(fillClr.G) / 0xff
-	fb := float64(fillClr.B) / 0xff
-	sr := float64(strokeClr.R) / 0xff
-	sg := float64(strokeClr.G) / 0xff
-	sb := float64(strokeClr.B) / 0xff
+	fr, fg, fb, _ := colorf.RGBAf(fillClr)
+	sr, sg, sb, _ := colorf.RGBAf(strokeClr)
 
 	dc := gg.NewContext(64, 64)
 	dc.LineTo(0, 32)

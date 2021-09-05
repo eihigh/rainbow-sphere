@@ -7,67 +7,79 @@ import (
 	"time"
 
 	"github.com/eihigh/rainbow-sphere/asset"
-	"github.com/eihigh/zu/tick"
+	"github.com/eihigh/zu/hsm"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var (
-	// gt - グローバルな時の流れを表すtick。これをいろんなところで使う
-	gt tick.Tick
-
 	firstStage = 1
+
+	scenes = []*hsm.State{
+		{
+			Name:   "/title",
+			Enter:  enterTitle,
+			Update: updateTitle,
+			Draw:   drawTitle,
+		},
+		{
+			Name:   "/title/howtoplay",
+			Update: updateTitleHowtoplay,
+			Draw:   drawTitleHowtoplay,
+		},
+		{
+			Name:  "/stage",
+			Enter: enterStage,
+		},
+		{
+			Name:   "/stage/open",
+			Enter:  enterStageOpen,
+			Update: updateStageOpen,
+			Draw:   drawStageOpen,
+		},
+		{
+			Name:   "/stage/main",
+			Update: updateStageMain,
+			Draw:   drawStageMain,
+		},
+		{
+			Name:   "/stage/main/pause",
+			Update: updateStageMainPause,
+			Draw:   drawStageMainPause,
+		},
+		{
+			Name:   "/stage/clear",
+			Update: updateStageClear,
+			Draw:   drawStageClear,
+		},
+		{
+			Name:   "/stage/failed",
+			Update: updateStageFailed,
+			Draw:   drawStageFailed,
+		},
+	}
+
+	scene = hsm.NewHSM(scenes, "/stage/open", 1)
 )
 
-type app struct {
-	child interface{}
-}
+type app struct{}
 
 func newApp() (*app, error) {
 	rand.Seed(time.Now().UnixNano())
-	a := &app{
-		child: newTitle(),
-		// child: newStage(1),
-	}
+	a := &app{}
 	return a, nil
 }
 
 func (a *app) Update() error {
-	defer gt.Advance(1)
-
 	if asset.Debug && ebiten.IsKeyPressed(ebiten.KeyQ) {
 		return io.EOF
 	}
-
-	// 文字列のかわりに型で分岐
-	// updateやdrawのシグネチャがどうなるか読めなかったためinterface定義はしてない
-	// あとシーンは少ないのでdynamic castしてもそう問題にならない
-	switch c := a.child.(type) {
-	case *title:
-		switch c.update() {
-		case "stage":
-			a.child = newStage(firstStage)
-		}
-
-	case *stage:
-		switch c.update() {
-		case "title":
-			a.child = newTitle()
-		}
-	}
-
+	scene.Update()
 	return nil
 }
 
 func (a *app) Draw(screen *ebiten.Image) {
 	asset.Screen = screen
-
-	switch c := a.child.(type) {
-	case *title:
-		c.draw()
-
-	case *stage:
-		c.draw()
-	}
+	scene.Draw()
 }
 
 func (a *app) Layout(ow, oh int) (int, int) {

@@ -5,13 +5,10 @@ import (
 
 	"github.com/eihigh/rainbow-sphere/asset"
 	"github.com/eihigh/rainbow-sphere/util"
+	"github.com/eihigh/zu/mathg"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
-
-// SubTickの問題点 - 自分が従う先のTickを取り違える可能性があること（取り違えた）
-// やっぱりポインタ持たせた方がいい？
-// またはTickすべてを一括で管理するか。
 
 func (s *Stage) DrawObjects(t T) {
 	{
@@ -31,27 +28,25 @@ func (s *Stage) DrawObjects(t T) {
 			util.Center(&op.GeoM, i)
 			op.GeoM.Scale(sp.scale, sp.scale)
 
-			switch sp.mode {
+			switch sp.state.State() {
 			case "":
 
 			case "damage":
 				// ダメージを受けてから24fの間点滅する
-				s.tick.SubTick(sp.start).Span(0, 24, func(t T) {
-					t.Repeat(0, 6, func(n int, t T) {
-						t.Span(0, 3, func(T) {
-							op.ColorM.Scale(1, 1, 1, 0.6)
-						}).Span(0, 3, func(T) {
-							op.ColorM.Scale(1, 1, 1, 0.9)
-						})
+				sp.state.Tick.RepeatFor(0, 6, 4, func(n int, t T) {
+					t.Span(0, 3, func(T) {
+						op.ColorM.Scale(1, 1, 1, 0.6)
+					}).Span(0, 3, func(T) {
+						op.ColorM.Scale(1, 1, 1, 0.9)
 					})
 				})
 
 			case "break":
 				// 拡大しつつフェードアウト
-				s.tick.SubTick(sp.start).Span(0, 18, func(t T) {
-					scale := 1.0 + 2.0*t.ElapsedRate()
+				sp.state.Tick.Span(0, 18, func(t T) {
+					scale := mathg.Lerp(1, 3, t.Rate())
+					alpha := mathg.Lerp(1, 0, t.Rate())
 					op.GeoM.Scale(scale, scale)
-					alpha := 1.0 - t.ElapsedRate()
 					op.ColorM.Scale(1, 1, 1, alpha)
 				}).From(0, func(T) {
 					op.ColorM.Scale(0, 0, 0, 0) // 見た目上消える
@@ -98,10 +93,10 @@ func (s *Stage) DrawObjects(t T) {
 			op.GeoM.Scale(-1, 1)
 		}
 
-		switch s.player.mode {
+		switch s.player.state.State() {
 		case "":
 			// 開幕無敵
-			s.tick.SubTick(s.player.start).Span(1, startInvincibleTick, func(t T) {
+			s.player.state.Tick.Span(1, startInvincibleTick, func(t T) {
 				t.Repeat(0, 8, func(n int, t T) {
 					t.Span(0, 4, func(T) {
 						op.ColorM.Scale(1, 1, 1, 0.2)
@@ -113,7 +108,7 @@ func (s *Stage) DrawObjects(t T) {
 
 		case "damage":
 			// ダメージを受けてから点滅する
-			s.tick.SubTick(s.player.start).Span(0, 24, func(t T) {
+			s.player.state.Tick.Span(0, 24, func(t T) {
 				t.Repeat(0, 6, func(n int, t T) {
 					t.Span(0, 3, func(T) {
 						op.ColorM.Scale(1, 1, 1, 0.2)
@@ -125,7 +120,7 @@ func (s *Stage) DrawObjects(t T) {
 
 		case "dead":
 			// 拡大しつつフェードアウト
-			s.tick.SubTick(s.player.start).Span(0, 18, func(t T) {
+			s.player.state.Tick.Span(0, 18, func(t T) {
 				scale := 1.0 + 2.0*t.ElapsedRate()
 				op.GeoM.Scale(scale, scale)
 				alpha := 1.0 - t.ElapsedRate()

@@ -8,7 +8,8 @@ import (
 
 	"github.com/eihigh/rainbow-sphere/asset"
 	"github.com/eihigh/rainbow-sphere/util"
-	"github.com/eihigh/zu/geom"
+
+	"github.com/eihigh/zu/mathg"
 	"github.com/eihigh/zu/tick"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -23,15 +24,14 @@ const (
 	coolTime            = 4
 	invincibleTick      = 36
 	startInvincibleTick = 90
-	tau                 = math.Pi * 2
 )
 
 type T = tick.Tick
 
 type Stage struct {
 	tick      T
-	bounds    geom.Rectangle
-	area      geom.Rectangle
+	bounds    mathg.Rectangle
+	area      mathg.Rectangle
 	areaImage *ebiten.Image
 	player    *player
 	spheres   []*sphere
@@ -50,29 +50,27 @@ type Config struct {
 type Input struct {
 	Left, Up, Right, Down bool
 	Shoot                 bool
-	Cursor                geom.Point
+	Cursor                mathg.Point
 }
 
 type player struct {
-	pos       geom.Point
+	pos       mathg.Point
 	left      bool // 左方向移動中フラグ
 	hp        int
-	mode      string // "" | damage | dead
-	start     int
 	lastShoot int
+	state     tick.State
 }
 
 type sphere struct {
 	index    int
-	pos, vel geom.Point
+	pos, vel mathg.Point
 	scale    float64
 	hp       int
-	mode     string // "" | damage | break
-	start    int    // modeになったtick
+	state    tick.State
 }
 
 type shoot struct {
-	pos, vel geom.Point
+	pos, vel mathg.Point
 	dead     bool
 }
 
@@ -83,12 +81,11 @@ type shoot struct {
 func NewStage(c *Config) *Stage {
 	// がんばる
 	s := &Stage{
-		bounds: geom.Rect(0, 0, asset.VW, asset.VH),
-		area:   geom.Rect(200, 100, 600, 500),
+		bounds: mathg.Rect(0, 0, asset.VW, asset.VH),
+		area:   mathg.Rect(200, 100, 600, 500),
 		player: &player{
-			pos: geom.Pt(util.Col(6), util.Row(6)),
-			// pos: geom.Point{},
-			hp: c.HP,
+			pos: mathg.Pt(util.Col(6), util.Row(6)),
+			hp:  c.HP,
 		},
 	}
 
@@ -99,9 +96,9 @@ func NewStage(c *Config) *Stage {
 	for i := 0; i < 7; i++ {
 
 		// 位置
-		pos := geom.Pt(util.Col(6), util.Row(6))
+		pos := mathg.Pt(util.Col(6), util.Row(6))
 		r := util.Row(5)
-		t := tau / 7 * float64(i)
+		t := mathg.Tau / 7 * float64(i)
 
 		// 拡大率
 		scale := c.MinScale + c.AmpScale*rand.Float64()
@@ -109,12 +106,12 @@ func NewStage(c *Config) *Stage {
 		// 外向きにランダムなベクトル
 		vr := c.MinSpeed + c.AmpSpeed*rand.Float64()
 		vr /= math.Sqrt(scale) // 大きな陰陽玉は気持ち遅くする
-		vt := t + tau/2*(rand.Float64()-0.5)
+		vt := t + mathg.Tau/2*(rand.Float64()-0.5)
 
 		sp := &sphere{
 			index: i,
-			pos:   pos.Add(geom.PtFromRect(r, t)),
-			vel:   geom.PtFromRect(vr, vt),
+			pos:   pos.Add(mathg.PolarToPoint(r, t)),
+			vel:   mathg.PolarToPoint(vr, vt),
 			scale: scale,
 			hp:    c.SphereHP,
 		}
@@ -143,6 +140,7 @@ func (s *Stage) UpdateMain(i *Input) string {
 	}
 
 	// プレイヤーUpdate（射撃、移動）
+	s.player.state.Advance(1)
 	s.shoot(i)
 	if i.Left {
 		s.player.pos.X -= playerSpeed
@@ -174,6 +172,7 @@ func (s *Stage) UpdateMain(i *Input) string {
 	// 陰陽玉Update
 	// そんなに数ないのでGCしない
 	for _, sp := range s.spheres {
+		sp.state.Advance(1)
 		next := sp.pos.Add(sp.vel)
 		if next.X < s.bounds.Min.X {
 			sp.vel.X = -sp.vel.X
@@ -197,7 +196,7 @@ func (s *Stage) UpdateMain(i *Input) string {
 		if shoot.garbage() {
 			continue
 		}
-		b := geom.Rect(s.bounds.Min.X-50, s.bounds.Min.Y-50, s.bounds.Max.X+50, s.bounds.Max.Y+50)
+		b := mathg.Rect(s.bounds.Min.X-50, s.bounds.Min.Y-50, s.bounds.Max.X+50, s.bounds.Max.Y+50)
 		if !shoot.pos.In(b) {
 			continue
 		}
@@ -263,19 +262,19 @@ func (s *Stage) shoot(i *Input) {
 	s.player.lastShoot = s.tick.Elapsed()
 
 	aim := i.Cursor.Sub(s.player.pos).Angle()
-	aim2 := aim - tau/35
-	aim3 := aim + tau/35
+	aim2 := aim - mathg.Tau/35
+	aim3 := aim + mathg.Tau/35
 	s.shoots = append(s.shoots, &shoot{
 		pos: s.player.pos,
-		vel: geom.PtFromRect(shootSpeed, aim),
+		vel: mathg.PolarToPoint(shootSpeed, aim),
 	})
 	s.shoots = append(s.shoots, &shoot{
 		pos: s.player.pos,
-		vel: geom.PtFromRect(shootSpeed, aim2),
+		vel: mathg.PolarToPoint(shootSpeed, aim2),
 	})
 	s.shoots = append(s.shoots, &shoot{
 		pos: s.player.pos,
-		vel: geom.PtFromRect(shootSpeed, aim3),
+		vel: mathg.PolarToPoint(shootSpeed, aim3),
 	})
 }
 
@@ -284,14 +283,14 @@ func (s *Stage) shoot(i *Input) {
 // ==================================================
 
 func (p *player) hittable(t T) bool {
-	if p.mode == "dead" {
+	if p.state.State() == "dead" {
 		return false
 	}
-	if p.mode == "damage" && t.SubTick(p.start).Elapsed() < invincibleTick {
+	if p.state.State() == "damage" && p.state.Tick.Elapsed() < invincibleTick {
 		// ダメージ受けてから無敵時間以内は当たり判定消失
 		return false
 	}
-	if p.mode == "" && t.SubTick(p.start).Elapsed() < startInvincibleTick {
+	if p.state.State() == "" && p.state.Tick.Elapsed() < startInvincibleTick {
 		// 開幕無敵
 		return false
 	}
@@ -300,11 +299,10 @@ func (p *player) hittable(t T) bool {
 
 func (p *player) hit(t T) {
 	p.hp--
-	p.start = t.Elapsed()
 	if p.hp <= 0 {
-		p.mode = "dead"
+		p.state.Change("dead")
 	} else {
-		p.mode = "damage"
+		p.state.Change("damage")
 	}
 }
 
@@ -314,16 +312,15 @@ func (p *player) hit(t T) {
 
 // hittable - 陰陽玉の当たり判定が有効かどうか返す
 func (s *sphere) hittable() bool {
-	return s.mode != "break"
+	return s.state.State() != "break"
 }
 
 func (s *sphere) hit(t T) {
 	s.hp--
-	s.start = t.Elapsed()
 	if s.hp <= 0 {
-		s.mode = "break"
+		s.state.Change("break")
 	} else {
-		s.mode = "damage"
+		s.state.Change("damage")
 	}
 }
 
