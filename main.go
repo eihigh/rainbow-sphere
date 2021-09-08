@@ -58,7 +58,7 @@ var (
 		},
 	}
 
-	scene = hsm.NewHSM(scenes, "/stage/open", 1)
+	scene = hsm.NewHSM(scenes, "/title", 1)
 )
 
 type app struct{}

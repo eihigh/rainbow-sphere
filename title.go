@@ -5,6 +5,7 @@ import (
 
 	"github.com/eihigh/rainbow-sphere/asset"
 	"github.com/eihigh/rainbow-sphere/util"
+	"github.com/eihigh/zu/colorf"
 	"github.com/eihigh/zu/hsm"
 	"github.com/eihigh/zu/mathg"
 	"github.com/eihigh/zu/tick"
@@ -63,7 +64,7 @@ func drawTitle(h *hsm.HSM) {
 	*/
 
 	msg := "恐怖！虹色の陰陽玉\n～ Rainbow Impact"
-	clr := color.Alpha{uint8(alpha * 255)}
+	clr := colorf.Alpha{A: alpha}
 	util.DrawTextCenter(asset.Screen, msg, 48, x, y, clr)
 
 	// 次に進むテキスト
