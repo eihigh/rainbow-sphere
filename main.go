@@ -171,7 +171,7 @@ func Fragment(dstPos vec4, srcPos vec2, color vec4) vec4 {
   rgb *= vec3(0.95, 1.05, 0.95)
 
   n := floor(imageDstSize().y / 480) + 1
-  rgb *= 1.0 - mod(dstPos.y, n)*0.3
+  rgb *= 1.0 - fract(dstPos.y / n)*0.3
 
   rgb *= 1.4
   return vec4(rgb, clr.a)
