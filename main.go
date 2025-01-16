@@ -165,13 +165,13 @@ func Fragment(dstPos vec4, srcPos vec2, color vec4) vec4 {
   rgb = clamp(mix(rgb, rgb*rgb, 0.4), 0, 1)
 
   // vignette
-  origin, size := imageSrcRegionOnTexture()
-  uv := (srcPos - origin) / size
+  uv := (srcPos - imageSrc0Origin()) / imageSrc0Size()
   vig := 40*uv.x*uv.y*(1-uv.x)*(1-uv.y)
   rgb *= vec3(pow(vig, 0.3))
   rgb *= vec3(0.95, 1.05, 0.95)
 
-  rgb *= 1.0 - mod(dstPos.y, 2)*0.2
+  n := floor(imageDstSize().y / 480) + 1
+  rgb *= 1.0 - mod(dstPos.y, n)*0.3
 
   rgb *= 1.4
   return vec4(rgb, clr.a)
